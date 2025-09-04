@@ -25,10 +25,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          # cache removed so it won't error without a lockfile
 
       - name: Install
-        run: npm ci || npm i
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
 
       - name: Compute base
         id: base
@@ -43,9 +48,7 @@ jobs:
       - name: Build
         env:
           VITE_BASE: ${{ steps.base.outputs.VITE_BASE }}
-        run: |
-          echo "Using VITE_BASE=$VITE_BASE"
-          npm run build
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
