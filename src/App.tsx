@@ -19,20 +19,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-/*
-  Shreyash Ojha  LVMH-Ready Portfolio (Tokyo Cyberpunk)
-  ------------------------------------------------------
-  Single-file React site built to be production-ready and easy to export.
-  Styling uses TailwindCSS; animation via Framer Motion; icons via lucide-react.
-
-  Edit the DATA object below to update content. All images are optional.
-  This aesthetic blends luxury minimalism with a restrained Tokyo-cyberpunk palette.
-
-  NOTE (encoding safety):
-  - All typographic characters in string literals are normalized or escaped.
-  - Avoid raw em-dash or smart quotes in JS strings to prevent parser issues.
-*/
-
 const DATA = {
   name: "Shreyash Ojha",
   headline: "Luxury Brand Strategist \u2022 Tech-Driven Retail Innovator \u2022 MPS Parsons",
@@ -40,7 +26,7 @@ const DATA = {
   email: "Shreyashojha93@gmail.com", // update
   phone: "+1 (917) 431-3542", // update
   links: {
-    linkedin: "https://www.linkedin.com/in/shreyash-ojha", // update
+    linkedin: "https://www.linkedin.com/in/shreyash-ojha-3ba93b332/", // update
     github: "https://github.com/", // optional
     portfolio: "https://your-portfolio.example", // optional
     cvPdf: "#", // Replace with hosted PDF link when ready
