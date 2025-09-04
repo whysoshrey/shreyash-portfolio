@@ -202,7 +202,7 @@ const DATA = {
         "Community-driven platform for NYC street-fashion vendors; pooled procurement, dynamic pricing, and vendor-centric analytics.",
       impact:
         "Adoption-Intent Index analysis prioritized monthly thrifters; designed discovery + sizing fixes aligned with WTP bands.",
-      actions: [{ label: "Case Study", href: "#nava" }],
+      actions: [{ label: "Case Study", href: "https://drive.google.com/file/d/1jqg9wLWk8oFEvTwsM2dol8pGHvcQuIWH/view?usp=share_link" }],
       media: null,
       details: [
         "Quant + qual mixed-methods; ANOVA on adoption-intent across thrifting regularity groups.",
