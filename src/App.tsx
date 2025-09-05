@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import {
   ArrowUpRight,
   Mail,
@@ -19,17 +19,31 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+/*
+  Shreyash Ojha  LVMH-Ready Portfolio (Tokyo Cyberpunk)
+  ------------------------------------------------------
+  Single-file React site built to be production-ready and easy to export.
+  Styling uses TailwindCSS; animation via Framer Motion; icons via lucide-react.
+
+  Edit the DATA object below to update content. All images are optional.
+  This aesthetic blends luxury minimalism with a restrained Tokyo-cyberpunk palette.
+
+  NOTE (encoding safety):
+  - All typographic characters in string literals are normalized or escaped.
+  - Avoid raw em-dash or smart quotes in JS strings to prevent parser issues.
+*/
+
 const DATA = {
   name: "Shreyash Ojha",
   headline: "Luxury Brand Strategist \u2022 Tech-Driven Retail Innovator \u2022 MPS Parsons",
   location: "New York City, USA",
-  email: "Shreyashojha93@gmail.com", // update
-  phone: "+1 (917) 431-3542", // update
+  email: "Shreyashojha93@gmail.com",
+  phone: "+1 (917) 431-3542",
   links: {
-    linkedin: "https://www.linkedin.com/in/shreyash-ojha-3ba93b332", // update
-    github: "https://github.com/whysoshrey", // optional
-    portfolio: "#", // optional
-    cvPdf: "https://drive.google.com/drive/folders/1vzyIffJxEd25UbZf9DSP4zHNJveXGWtM?usp=share_link", // Replace with hosted PDF link when ready
+    linkedin: "https://www.linkedin.com/in/shreyash-ojha",
+    github: "https://github.com/",
+    portfolio: "https://your-portfolio.example",
+    cvPdf: "#",
   },
   summary:
     "Luxury-grade brand strategy with an engineer's rigor: I design narratives, experiences, and systems that make fashion smarter, more inclusive, and operationally precise  from autonomous shop-floor bots to city-scale experiential pop-ups.",
@@ -202,7 +216,7 @@ const DATA = {
         "Community-driven platform for NYC street-fashion vendors; pooled procurement, dynamic pricing, and vendor-centric analytics.",
       impact:
         "Adoption-Intent Index analysis prioritized monthly thrifters; designed discovery + sizing fixes aligned with WTP bands.",
-      actions: [{ label: "Case Study", href: "https://drive.google.com/file/d/1jqg9wLWk8oFEvTwsM2dol8pGHvcQuIWH/view?usp=share_link" }],
+      actions: [{ label: "Case Study", href: "#nava" }],
       media: null,
       details: [
         "Quant + qual mixed-methods; ANOVA on adoption-intent across thrifting regularity groups.",
@@ -333,6 +347,145 @@ const ACCENTS = {
   magenta: "#FF00E5",
 };
 
+// Live animated wallpaper (neon particles)
+function LiveWallpaper() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf = 0;
+    let particles: { x: number; y: number; vx: number; vy: number; r: number; h: number }[] = [];
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const COUNT = reduceMotion ? 16 : 36;
+    const SPEED = reduceMotion ? 0.18 : 0.36;
+
+    const resetSize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // reset transform so scaling doesn't stack
+      // @ts-ignore
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      // @ts-ignore
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const init = () => {
+      particles = Array.from({ length: COUNT }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * SPEED,
+        vy: (Math.random() - 0.5) * SPEED,
+        r: Math.random() * 2 + 0.8,
+        h: Math.random() * 360,
+      }));
+    };
+
+    const step = () => {
+      ctx.fillStyle = 'rgba(8,8,10,0.14)';
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      (ctx as any).globalCompositeOperation = 'lighter';
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy; p.h += 0.35; p.vx += 0.003 * Math.sin(p.h * 0.07); p.vy += 0.003 * Math.cos(p.h * 0.07);
+        if (p.x < -50) p.x = window.innerWidth + 50;
+        if (p.x > window.innerWidth + 50) p.x = -50;
+        if (p.y < -50) p.y = window.innerHeight + 50;
+        if (p.y > window.innerHeight + 50) p.y = -50;
+
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 10);
+        g.addColorStop(0, `hsla(${p.h}, 100%, 60%, 0.22)`);
+        g.addColorStop(1, `hsla(${(p.h + 200) % 360}, 100%, 50%, 0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      (ctx as any).globalCompositeOperation = 'source-over';
+      if (!reduceMotion) raf = requestAnimationFrame(step);
+    };
+
+    const onResize = () => { resetSize(); init(); };
+
+    resetSize();
+    init();
+    step();
+    window.addEventListener('resize', onResize);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
+
+  return <canvas aria-hidden className="fixed inset-0 -z-10 pointer-events-none opacity-[0.14]" ref={canvasRef} />;
+}
+
+// Reusable 3D tilt wrapper for cards (mouse tilt)
+function Tilt3D({ children, intensity = 6, className }: { children: React.ReactNode; intensity?: number; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mvX = useMotionValue(0);
+  const mvY = useMotionValue(0);
+  const mvZ = useMotionValue(0);
+  const rotateX = useSpring(mvY, { stiffness: 180, damping: 18 });
+  const rotateY = useSpring(mvX, { stiffness: 180, damping: 18 });
+  const z = useSpring(mvZ, { stiffness: 180, damping: 18 });
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    mvY.set((py - 0.5) * intensity);
+    mvX.set((0.5 - px) * intensity);
+    mvZ.set(20);
+  };
+  const onLeave = () => { mvX.set(0); mvY.set(0); mvZ.set(0); };
+
+  return (
+    <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} style={{ perspective: 1000, transformStyle: 'preserve-3d' }} className={className}>
+      <motion.div style={{ rotateX, rotateY, z }}>
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+// Scroll-reactive discovery overlay (very subtle color shift/parallax)
+function DiscoveryOverlay() {
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 800, 1600, 2400], [0.01, 0.03, 0.035, 0.04]);
+  const y = useTransform(scrollY, [0, 2000], [0, -120]);
+  return (
+    <motion.div
+      aria-hidden
+      className="fixed inset-0 -z-10 pointer-events-none"
+      style={{
+        y,
+        opacity,
+        background:
+          "radial-gradient(700px 350px at 15% 120%, rgba(0,229,255,0.05), transparent 60%)," +
+          "radial-gradient(900px 450px at 110% 0%, rgba(255,0,229,0.04), transparent 60%)",
+      }}
+    />
+  );
+}
+
+// Vertical neon scroll progress bar (discovery cue)
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleY = useSpring(scrollYProgress, { stiffness: 140, damping: 20, mass: 0.4 });
+  return (
+    <div className="fixed right-4 top-24 h-[60vh] w-1 rounded-full bg-white/5 overflow-hidden z-30 pointer-events-none">
+      <motion.div className="w-full h-full origin-top bg-gradient-to-b from-[#00E5FF] via-[#B388FF] to-[#FF00E5]" style={{ scaleY, opacity: 0.55 }} />
+    </div>
+  );
+}
+
 function NeonWord({ children }: { children: React.ReactNode }) {
   return (
     <span className="relative">
@@ -443,6 +596,11 @@ export default function Portfolio() {
   );
   const [modal, setModal] = useState<null | typeof DATA.projects[number]>(null);
 
+  // Scroll-driven 3D motion for hero
+  const { scrollY } = useScroll();
+  const heroY  = useTransform(scrollY, [0, 600], [0, -35]);
+  const heroRX = useTransform(scrollY, [0, 600], [0, 5]);
+
   useEffect(() => {
     runSmokeTests();
   }, []);
@@ -451,6 +609,8 @@ export default function Portfolio() {
     <div className={`${ACCENTS.bg} ${ACCENTS.text} min-h-screen relative overflow-x-clip`}>
       {/* Background grid & glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0">
+        <LiveWallpaper />
+        <DiscoveryOverlay />
         <div className="absolute inset-0 opacity-40" style={{
           backgroundImage:
             "radial-gradient(600px 300px at 10% 10%, rgba(0,229,255,0.08), transparent 60%)," +
@@ -478,23 +638,26 @@ export default function Portfolio() {
           </nav>
           <div className="flex items-center gap-3">
             {DATA.links.linkedin && (
-              <a href={DATA.links.linkedin} target="_blank" className="p-2 rounded-lg hover:bg-white/10" aria-label="LinkedIn">
+              <a href={DATA.links.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-lg hover:bg-white/10" aria-label="LinkedIn">
                 <Linkedin className="w-4 h-4" />
               </a>
             )}
             {DATA.links.github && (
-              <a href={DATA.links.github} target="_blank" className="p-2 rounded-lg hover:bg-white/10" aria-label="GitHub">
+              <a href={DATA.links.github} target="_blank" rel="noreferrer" className="p-2 rounded-lg hover:bg-white/10" aria-label="GitHub">
                 <Github className="w-4 h-4" />
               </a>
             )}
             {DATA.links.cvPdf && DATA.links.cvPdf !== "#" && (
-              <a href={DATA.links.cvPdf} className="p-2 rounded-lg hover:bg-white/10" aria-label="Download CV" target="_blank">
+              <a href={DATA.links.cvPdf} className="p-2 rounded-lg hover:bg-white/10" aria-label="Download CV" target="_blank" rel="noreferrer">
                 <Download className="w-4 h-4" />
               </a>
             )}
           </div>
         </div>
       </header>
+
+      {/* Discovery scroll progress bar */}
+      <ScrollProgressBar />
 
       {/* Hero */}
       <section id="top" className="max-w-6xl mx-auto px-4 pt-14 pb-10 md:pt-20 md:pb-16">
@@ -504,6 +667,7 @@ export default function Portfolio() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
+              style={{ y: heroY, rotateX: heroRX }}
               className="text-3xl md:text-5xl font-semibold leading-tight hero-title"
             >
               <span className="block text-zinc-300" data-testid="hero-name">Shreyash Ojha</span>
@@ -527,7 +691,7 @@ export default function Portfolio() {
             <div className="mt-6 flex flex-wrap gap-2 text-xs text-zinc-400">
               <span className="inline-flex items-center gap-2 mr-4"><MapPin className="w-3 h-3" /> {DATA.location}</span>
               <span className="inline-flex items-center gap-2 mr-4"><Phone className="w-3 h-3" /> {DATA.phone}</span>
-              <span className="inline-flex items-center gap-2"><LinkIcon className="w-3 h-3" /> Portfolio: <a className="underline decoration-dotted underline-offset-4" target="_blank" href={DATA.links.portfolio}>link</a></span>
+              <span className="inline-flex items-center gap-2"><LinkIcon className="w-3 h-3" /> Portfolio: <a className="underline decoration-dotted underline-offset-4" target="_blank" rel="noreferrer" href={DATA.links.portfolio}>link</a></span>
             </div>
           </div>
           <div className="md:col-span-5">
@@ -561,33 +725,35 @@ export default function Portfolio() {
         <SectionTitle icon={Briefcase} title="Experience" kicker={"OPS \u2022 DATA \u2022 LUXURY"} />
         <div className="grid md:grid-cols-2 gap-6">
           {DATA.experience.map((job) => (
-            <motion.div key={job.company} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
-              className={`rounded-2xl p-6 ${ACCENTS.card}`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xl font-semibold text-white">{job.company}</div>
-                  <div className="text-sm text-zinc-300">{job.role}</div>
+            <Tilt3D key={job.company} className="">
+              <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
+                className={`rounded-2xl p-6 ${ACCENTS.card}`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xl font-semibold text-white">{job.company}</div>
+                    <div className="text-sm text-zinc-300">{job.role}</div>
+                  </div>
+                  <div className="text-xs text-zinc-400">{job.dates}</div>
                 </div>
-                <div className="text-xs text-zinc-400">{job.dates}</div>
-              </div>
-              <ul className="mt-3 space-y-2 text-zinc-300">
-                {job.bullets.map((b, i) => (
-                  <li key={i} className="flex gap-2"><span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400" /> <span>{b}</span></li>
-                ))}
-              </ul>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {job.skills.map((s) => <TagPill key={s} label={s} />)}
-              </div>
-              {job.links?.length ? (
-                <div className="mt-4">
-                  {job.links.map((L) => (
-                    <a key={L.href} href={L.href} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/20 bg-white text-black`}>
-                      <ExternalLink className="w-4 h-4" /> <span className="font-medium">{L.label}</span>
-                    </a>
+                <ul className="mt-3 space-y-2 text-zinc-300">
+                  {job.bullets.map((b, i) => (
+                    <li key={i} className="flex gap-2"><span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400" /> <span>{b}</span></li>
                   ))}
+                </ul>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {job.skills.map((s) => <TagPill key={s} label={s} />)}
                 </div>
-              ) : null}
-            </motion.div>
+                {job.links?.length ? (
+                  <div className="mt-4">
+                    {job.links.map((L) => (
+                      <a key={L.href} href={L.href} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/20 bg-white text-black`}>
+                        <ExternalLink className="w-4 h-4" /> <span className="font-medium">{L.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </motion.div>
+            </Tilt3D>
           ))}
         </div>
       </section>
@@ -608,35 +774,43 @@ export default function Portfolio() {
             </div>
           </div>
         </div>
-        <div className="grid md:grid-cols-2 gap-6">
+
+        {/* Masonry columns to fill gaps nicely */}
+        <div className="columns-1 md:columns-2 gap-6 [column-fill:_balance]">
           {filtered.map((p) => (
-            <motion.article key={p.id} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
-              className={`group relative overflow-hidden rounded-2xl p-6 ${ACCENTS.card} hover:shadow-[0_0_60px_0_rgba(0,229,255,0.25)]`}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <h3 className="text-lg font-semibold leading-tight">{p.title}</h3>
-                <span className="text-xs text-zinc-400">{p.city}{" \u2022 "}{p.year}</span>
-              </div>
-              <p className="mt-2 text-zinc-300">{p.blurb}</p>
-              <p className="mt-1 text-sm text-zinc-400">{p.impact}</p>
-              {(Array.isArray(p.media) ? p.media : (p.media ? [p.media] : [])).map((m, idx) => (
-                <a key={idx} href={m.href} target="_blank" rel="noreferrer" className="mt-3 block rounded-xl overflow-hidden border border-black/20 bg-white">
-                  <img src={m.thumb} alt={p.title + ' video thumbnail'} className="w-full h-40 object-cover" />
-                </a>
-              ))}
-              <div className="mt-3 flex flex-wrap gap-2">{p.tags.map((t) => <TagPill key={t} label={t} />)}</div>
-              <div className="mt-4 flex items-center gap-3">
-                <button onClick={() => setModal(p)} className="inline-flex items-center gap-1 text-sm underline decoration-dotted underline-offset-4">
-                  Case details <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-                {p.actions?.map((a) => (
-                  <a key={a.label} href={a.href} className="inline-flex items-center gap-1 text-sm text-zinc-300/80 hover:text-white">
-                    {a.label} <ExternalLink className="w-3.5 h-3.5" />
+            <Tilt3D key={p.id} className="mb-6 break-inside-avoid">
+              <motion.article
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className={`group relative overflow-hidden rounded-2xl p-6 ${ACCENTS.card} hover:shadow-[0_0_60px_0_rgba(0,229,255,0.25)]`}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="text-lg font-semibold leading-tight">{p.title}</h3>
+                  <span className="text-xs text-zinc-400">{p.city}{" \u2022 "}{p.year}</span>
+                </div>
+                <p className="mt-2 text-zinc-300">{p.blurb}</p>
+                <p className="mt-1 text-sm text-zinc-400">{p.impact}</p>
+                {(Array.isArray(p.media) ? p.media : (p.media ? [p.media] : [])).map((m, idx) => (
+                  <a key={idx} href={m.href} target="_blank" rel="noreferrer" className="mt-3 block rounded-xl overflow-hidden border border-black/20 bg-white">
+                    <img loading="lazy" src={m.thumb} alt={p.title + ' video thumbnail'} className="w-full h-40 object-cover" />
                   </a>
                 ))}
-              </div>
-              <div aria-hidden className="absolute -right-24 -bottom-24 h-64 w-64 rounded-full opacity-20 blur-3xl" style={{ background: `radial-gradient(closest-side, ${ACCENTS.cyan}, transparent)` }} />
-            </motion.article>
+                <div className="mt-3 flex flex-wrap gap-2">{p.tags.map((t) => <TagPill key={t} label={t} />)}</div>
+                <div className="mt-4 flex items-center gap-3">
+                  <button onClick={() => setModal(p)} className="inline-flex items-center gap-1 text-sm underline decoration-dotted underline-offset-4">
+                    Case details <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                  {p.actions?.map((a) => (
+                    <a key={a.label} href={a.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-zinc-300/80 hover:text-white">
+                      {a.label} <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  ))}
+                </div>
+                <div aria-hidden className="absolute -right-24 -bottom-24 h-64 w-64 rounded-full opacity-20 blur-3xl" style={{ background: `radial-gradient(closest-side, ${ACCENTS.cyan}, transparent)` }} />
+              </motion.article>
+            </Tilt3D>
           ))}
         </div>
       </section>
@@ -711,7 +885,7 @@ export default function Portfolio() {
             <a href={`mailto:${DATA.email}`} className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-black/20 bg-white text-black`}>
               <Mail className="w-4 h-4" /> {DATA.email}
             </a>
-            <a href={DATA.links.linkedin} target="_blank" className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-black/20 bg-white text-black`}>
+            <a href={DATA.links.linkedin} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-black/20 bg-white text-black`}>
               <Linkedin className="w-4 h-4" /> LinkedIn
             </a>
           </div>
@@ -754,7 +928,7 @@ export default function Portfolio() {
               {modal.actions?.length ? (
                 <div className="mt-5 flex gap-3">
                   {modal.actions.map((a) => (
-                    <a key={a.label} href={a.href} className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/15 ${ACCENTS.card}`}>
+                    <a key={a.label} href={a.href} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/15 ${ACCENTS.card}`}>
                       {a.label} <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                   ))}
