@@ -40,10 +40,10 @@ const DATA = {
   email: "Shreyashojha93@gmail.com",
   phone: "+1 (917) 431-3542",
   links: {
-    linkedin: "https://www.linkedin.com/in/shreyash-ojha",
-    github: "https://github.com/",
+    linkedin: "www.linkedin.com/in/shreyash-ojha-3ba93b332",
+    github: "https://github.com/whysoshrey",
     portfolio: "https://your-portfolio.example",
-    cvPdf: "#",
+    cvPdf: "https://drive.google.com/file/d/1dW_gqVkLbSkhseqeis1Y-J-59wqUX_g4/view?usp=share_link",
   },
   summary:
     "Luxury-grade brand strategy with an engineer's rigor: I design narratives, experiences, and systems that make fashion smarter, more inclusive, and operationally precise  from autonomous shop-floor bots to city-scale experiential pop-ups.",
