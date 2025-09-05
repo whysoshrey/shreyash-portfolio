@@ -40,7 +40,7 @@ const DATA = {
   email: "Shreyashojha93@gmail.com",
   phone: "+1 (917) 431-3542",
   links: {
-    linkedin: "www.linkedin.com/in/shreyash-ojha-3ba93b332",
+    linkedin: "https://www.linkedin.com/in/shreyash-ojha-3ba93b332",
     github: "https://github.com/whysoshrey",
     portfolio: "https://your-portfolio.example",
     cvPdf: "https://drive.google.com/file/d/1dW_gqVkLbSkhseqeis1Y-J-59wqUX_g4/view?usp=share_link",
