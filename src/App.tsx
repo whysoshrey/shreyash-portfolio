@@ -40,7 +40,7 @@ const DATA = {
   email: "Shreyashojha93@gmail.com",
   phone: "+1 (917) 431-3542",
   links: {
-    linkedin: "https://www.linkedin.com/in/shreyash-ojha-3ba93b332",
+    linkedin: "https://www.linkedin.com/in/shreyash-ojha-3ba93b332/",
     github: "https://github.com/whysoshrey",
     portfolio: "https://your-portfolio.example",
     cvPdf: "https://drive.google.com/file/d/1dW_gqVkLbSkhseqeis1Y-J-59wqUX_g4/view?usp=share_link",
@@ -216,7 +216,7 @@ const DATA = {
         "Community-driven platform for NYC street-fashion vendors; pooled procurement, dynamic pricing, and vendor-centric analytics.",
       impact:
         "Adoption-Intent Index analysis prioritized monthly thrifters; designed discovery + sizing fixes aligned with WTP bands.",
-      actions: [{ label: "Case Study", href: "#nava" }],
+      actions: [{ label: "Case Study", href: "https://drive.google.com/drive/folders/1LEq9a3W_HZY0Uno6SpKCi2A-LnZqSZyY?usp=share_link" }],
       media: null,
       details: [
         "Quant + qual mixed-methods; ANOVA on adoption-intent across thrifting regularity groups.",
@@ -294,7 +294,7 @@ const DATA = {
         "Seat / Shelter / Access / Representation / Ascent  a five-pillar campaign with 48-hour open-source runway.",
       impact:
         "Influencer-led streams (Wisdom Kaye, Aleali May, Bloody Osiris); giant red zip-tie installations.",
-      actions: [{ label: "See Concepts", href: "#offwhite-human" }],
+      actions: [{ label: "See Concepts", href: "https://drive.google.com/drive/folders/1LlCsjV3h4DfZSg7R44b9B1Gobo2m9fB4?usp=share_link" }],
       media: null,
       details: [
         "White tee drop; subway-rights metaphor; high-impact benches and AR moments.",
@@ -328,7 +328,7 @@ const DATA = {
         "Award-winning autonomous robot prototype moving work-in-process safely across sewing lines.",
       impact:
         "Throughput modeling + ROI; safety and reliability baselines for pilot.",
-      actions: [{ label: "Tech Notes", href: "#shahi-robot" }],
+      actions: [{ label: "Tech Notes", href: "https://drive.google.com/drive/folders/1TRxLZumQccGQxK6sexCD7WimqTcs0h4c?usp=share_link" }],
       media: null,
       details: ["Sensors, microcontrollers, safety logic; floor map routing."],
       category: "Tech",
